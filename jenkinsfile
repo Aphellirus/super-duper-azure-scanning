@@ -1,0 +1,58 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                // Check out your Terraform code from your version control system (e.g., Git)
+                checkout scm
+            }
+        }
+
+        stage('Install Terraform and Checkov') {
+            steps {
+                // Install Terraform (if not already installed) and Checkov
+                sh 'curl -LO https://releases.hashicorp.com/terraform/0.12.31/terraform_0.12.31_linux_amd64.zip'
+                sh 'unzip terraform_0.12.31_linux_amd64.zip'
+                sh 'mv terraform /usr/local/bin/'
+                sh 'curl -LO https://github.com/bridgecrewio/checkov/releases/latest/download/checkov_linux_amd64'
+                sh 'chmod +x checkov_linux_amd64'
+                sh 'mv checkov_linux_amd64 /usr/local/bin/checkov'
+            }
+        }
+
+        stage('Terraform Init') {
+            steps {
+                // Initialize Terraform in the directory with your Terraform code
+                sh 'terraform init'
+            }
+        }
+
+        stage('Terraform Apply') {
+            steps {
+                // Apply your Terraform configuration (optional, depending on your workflow)
+                sh 'terraform apply -auto-approve'
+            }
+        }
+
+        stage('Terraform IaC Scan') {
+            steps {
+                // Run Checkov to scan your Terraform code
+                sh 'checkov --directory .'
+            }
+        }
+
+        stage('Terraform Destroy') {
+            steps {
+                // Destroy the infrastructure created by Terraform (optional, depending on your workflow)
+                sh 'terraform destroy -auto-approve'
+            }
+        }
+    }
+
+    post {
+        always {
+            // Clean up resources or perform any necessary post-build actions
+        }
+    }
+}
