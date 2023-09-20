@@ -1,10 +1,7 @@
 # super-duper-azure-scanning
 IaC scanning for Azure resources using Terraform as the IaC tool
 
-
-# Webserver-using-Docker
-
-Creating a web server with docker
+Scanning cloud resources on Azure with infrastructure as code (IaC) scanning tools is crucial for identifying and addressing security vulnerabilities and misconfigurations in your Azure infrastructure. To set up IaC scanning for Azure resources, follow these steps:
 
 ## 1. Install Terraform and Checkov
 
